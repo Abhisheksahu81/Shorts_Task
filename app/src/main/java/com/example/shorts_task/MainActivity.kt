@@ -1,31 +1,18 @@
 package com.example.shorts_task
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.shorts_task.adapter.Adapter
 import com.example.shorts_task.api.ApiInterface
 import com.example.shorts_task.api.ApiUtilities
-import com.example.shorts_task.model.Comment
-import com.example.shorts_task.model.Creator
 import com.example.shorts_task.model.Post
-import com.example.shorts_task.model.Reaction
-import com.example.shorts_task.model.Submission
-import com.example.shorts_task.ui.theme.Shorts_TaskTheme
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -33,6 +20,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var rv : RecyclerView;
     private var currentpage = 0
+    private lateinit var list: MutableList<Post>
 
 
     @SuppressLint("MissingInflatedId")
@@ -43,10 +31,11 @@ class MainActivity : ComponentActivity() {
         rv = findViewById(R.id.rv)
         val apiInterface = ApiUtilities.getInstance().create(ApiInterface::class.java)
 
-        var list = mutableListOf<Post>()
+         list = mutableListOf<Post>()
+
 
         var adapter = Adapter(list, this)
-        rv.layoutManager = LinearLayoutManager(this)
+        rv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL )
         rv.adapter = adapter
 
         runBlocking {
@@ -55,6 +44,7 @@ class MainActivity : ComponentActivity() {
 
                 val result = apiInterface.getData(currentpage)
                 list = result.data.posts as MutableList<Post>
+
 
                 Log.d("Api data " , result.toString())
                 adapter.UpdateList(list)
@@ -65,10 +55,10 @@ class MainActivity : ComponentActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val layoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager
                 val totalItemCount = layoutManager.itemCount
-                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-
+                val lastVisibleItemPositions = layoutManager.findLastVisibleItemPositions(null)
+                val lastVisibleItemPosition = getLastVisibleItemPosition(lastVisibleItemPositions)
 
                 // Check if the last visible item has been reached
                 if (lastVisibleItemPosition == totalItemCount - 1) {
@@ -79,6 +69,7 @@ class MainActivity : ComponentActivity() {
                             val result = apiInterface.getData(currentpage+1)
                             list.addAll(result.data.posts)
 
+
                             Log.d("Api data " , result.toString())
 
                         }
@@ -86,12 +77,22 @@ class MainActivity : ComponentActivity() {
                     }
                     currentpage++;
                 }
+
+
             }
         })
 
-
-
-
     }
+
+    fun getLastVisibleItemPosition(lastVisibleItemPositions: IntArray): Int {
+        var maxSize = 0
+        for (i in lastVisibleItemPositions.indices) {
+            if (i == 0 || lastVisibleItemPositions[i] > maxSize) {
+                maxSize = lastVisibleItemPositions[i]
+            }
+        }
+        return maxSize
+    }
+    
 }
 

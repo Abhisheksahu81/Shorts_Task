@@ -1,16 +1,21 @@
 package com.example.shorts_task.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.shorts_task.R
+import com.example.shorts_task.VideoActivity
+import com.example.shorts_task.model.CustomData
 import com.example.shorts_task.model.Post
+import java.io.Serializable
 
 class Adapter(private var items: List<Post>, val context : Context) : RecyclerView.Adapter<Adapter.Viewholder>() {
 
@@ -33,14 +38,23 @@ class Adapter(private var items: List<Post>, val context : Context) : RecyclerVi
             .into(holder.thumb_image)
 
         holder.title.setText(item.submission.title);
+
+        holder.itemView.setOnClickListener(View.OnClickListener {
+            val intent = Intent(context, VideoActivity::class.java)
+            val newItem = ArrayList(items.subList(position , items.size-1))
+            intent.putExtra("POSTS" , newItem)
+            context.startActivity(intent)
+
+        })
+
     }
 
     override fun getItemCount(): Int {
         return items.size
     }
 
-    public fun UpdateList(p1 : List<Post>) {
-        items = p1;
+    public fun UpdateList(p1: List<Post>) {
+        items = p1
         notifyDataSetChanged()
     }
 

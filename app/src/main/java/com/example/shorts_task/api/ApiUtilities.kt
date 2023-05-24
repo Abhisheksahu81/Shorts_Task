@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiUtilities {
-    val baseurl = "https://internship-service.onrender.com"
+    val baseurl = "https://internship-service.onrender.com/"
 
     fun getInstance() : Retrofit {
         return Retrofit.Builder()
