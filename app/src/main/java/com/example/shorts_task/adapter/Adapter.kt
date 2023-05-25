@@ -30,14 +30,10 @@ class Adapter(private var items: List<Post>, val context : Context) : RecyclerVi
         val item = items[position]
 
         Glide.with(context)
-            .load(item.creator.pic) // Replace with the actual URL of the image
-            .into(holder.creator_image)
-
-        Glide.with(context)
             .load(item.submission.thumbnail) // Replace with the actual URL of the image
             .into(holder.thumb_image)
 
-        holder.title.setText(item.submission.title);
+        holder.title.setText(item.submission.description);
 
         holder.itemView.setOnClickListener(View.OnClickListener {
             val intent = Intent(context, VideoActivity::class.java)
@@ -62,7 +58,6 @@ class Adapter(private var items: List<Post>, val context : Context) : RecyclerVi
     inner class Viewholder (private val view: View) :
         RecyclerView.ViewHolder(view) {
 
-        val creator_image = view.findViewById<ImageView>(R.id.creator_photo);
         val title = view.findViewById<TextView>(R.id.thumb_name)
         val thumb_image = view.findViewById<ImageView>(R.id.thumb_image);
     }

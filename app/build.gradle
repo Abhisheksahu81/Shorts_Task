@@ -87,5 +87,8 @@ dependencies {
 
     //viewPager
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
-
+    //Rounded ImageView
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+    //Lottie animation
+    implementation "com.airbnb.android:lottie:3.7.0"
 }

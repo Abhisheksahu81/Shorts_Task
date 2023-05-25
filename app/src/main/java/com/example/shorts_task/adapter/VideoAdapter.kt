@@ -2,12 +2,14 @@ package com.example.shorts_task.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.RoundedCorner
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.exo_demo.ExoPlayerItem
 import com.example.shorts_task.R
 import com.example.shorts_task.model.Post
@@ -39,7 +41,20 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHold
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
         val post = posts.get(position)
-        holder.title.setText(post.submission.title)
+
+        holder.like.setText(post.reaction.count.toString())
+        holder.comment.setText(post.comment.count.toString())
+        holder.desc_text.setText(post.submission.description)
+        holder.creator_name.setText(post.creator.name)
+
+        Glide.with(context)
+            .load(post.creator.pic)
+            .into(holder.creator_image)
+
+        Glide.with(context)
+            .load(post.creator.pic)
+            .into(holder.channer_img)
+
 
         holder.setVideoPath(post.submission.mediaUrl)
 
@@ -55,8 +70,12 @@ override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHold
 
         val pbloading = view.findViewById<ProgressBar>(R.id.pd_loading)
         val playerview = view.findViewById<StyledPlayerView>(R.id.exo_player)
-        val title = view.findViewById<TextView>(R.id.title_of_video)
-
+        val creator_name = view.findViewById<TextView>(R.id.creator_name)
+        val creator_image = view.findViewById<com.makeramen.roundedimageview.RoundedImageView>(R.id.creator_image)
+        val channer_img = view.findViewById<com.makeramen.roundedimageview.RoundedImageView>(R.id.channel_img)
+        val desc_text = view.findViewById<TextView>(R.id.decr_text)
+        val like = view.findViewById<TextView>(R.id.likes_video)
+        val comment = view.findViewById<TextView>(R.id.comments)
 
 
         private lateinit var exoPlayer: ExoPlayer
